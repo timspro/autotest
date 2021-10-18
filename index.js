@@ -1,33 +1,17 @@
-async function safeCall(callback, value) {
-  try {
-    await callback(value)
-    return undefined
-  } catch (thrown) {
-    return thrown
-  }
-}
+import fetch from "node-fetch"
+import { URL } from "url"
 
-function expectedData(data, expected, done) {
+async function handleExpected(thing, expected) {
   if (typeof expected === "function") {
-    safeCall(expected, data).then(done)
+    await expected(thing)
   } else {
-    expect(data).toEqual(expected)
-    done()
-  }
-}
-
-function expectedError(error, expected, done) {
-  if (typeof expected === "function") {
-    safeCall(expected, error).then(done)
-  } else {
-    expect(error).toEqual(expected)
-    done()
+    expect(thing).toEqual(expected)
   }
 }
 
 export function autotest(
   callback,
-  { name, error, only, before = () => {}, after = (data) => data } = {}
+  { name, error, only, before = (...data) => data, after = (data) => data } = {}
 ) {
   return (...input) =>
     (expected) => {
@@ -35,25 +19,55 @@ export function autotest(
       const inputString = JSON.stringify(input).slice(1, -1)
       name = name || `${callback.name || "<anonymous>"}(${inputString})`
       const tester = only ? test.only : test
-      tester(name, (done) => {
-        Promise.resolve()
-          .then(() => before())
-          .then(() => callback(...input))
-          .then(after)
-          .catch((thrown) => {
-            if (error) {
-              expectedError(thrown, expected, done)
-            } else {
-              done(thrown)
-            }
-          })
-          .then((data) => {
-            if (error) {
-              done(new Error("data received when error expected"))
-            } else {
-              expectedData(data, expected, done)
-            }
-          })
+      tester(name, async () => {
+        let result
+        try {
+          const prepared = await before(...input)
+          const raw = await callback(...prepared)
+          result = await after(raw)
+        } catch (thrown) {
+          if (error) {
+            await handleExpected(thrown, expected)
+            return
+          }
+          throw thrown
+        }
+        if (error) {
+          throw new Error("data received when error expected")
+        } else {
+          await handleExpected(result, expected)
+        }
       })
     }
+}
+
+async function jsonFetch(...args) {
+  const result = await fetch(...args)
+  try {
+    return await result.json()
+  } catch (error) {
+    const text = await result.text()
+    const shorter = text.slice(0, 50)
+    throw new Error(`could not parse json starting with: ${shorter}`)
+  }
+}
+
+export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {}) {
+  return (input) => {
+    const urlBuilder = new URL(url)
+    for (const key of Object.keys(input)) {
+      urlBuilder.searchParams.append(key, input[key])
+    }
+    url = urlBuilder.toString()
+    return autotest(jsonFetch, autotestOptions)(url, fetchOptions)
+  }
+}
+
+export function autotestPost(url, { fetchOptions = {}, ...autotestOptions } = {}) {
+  const headers = { ...(fetchOptions.headers || {}), "Content-Type": "application/json" }
+  const postOptions = { ...fetchOptions, method: "POST", headers }
+  return (input) => {
+    const body = JSON.stringify(input)
+    return autotest(jsonFetch, autotestOptions)(url, { ...postOptions, body })
+  }
 }
