@@ -53,7 +53,7 @@ async function jsonFetch(...args) {
 }
 
 export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input) => {
+  return (input = {}) => {
     const urlBuilder = new URL(url)
     for (const key of Object.keys(input)) {
       urlBuilder.searchParams.append(key, input[key])
@@ -66,7 +66,7 @@ export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {})
 export function autotestPost(url, { fetchOptions = {}, ...autotestOptions } = {}) {
   const headers = { ...(fetchOptions.headers || {}), "Content-Type": "application/json" }
   const postOptions = { ...fetchOptions, method: "POST", headers }
-  return (input) => {
+  return (input = {}) => {
     const body = JSON.stringify(input)
     return autotest(jsonFetch, autotestOptions)(url, { ...postOptions, body })
   }

@@ -12,6 +12,8 @@ function error() {
 
 autotest(error, { error: true })()(expect.objectContaining({ message: "test" }))
 
+autotestGet("https://httpbin.org/get")()(expect.objectContaining({ args: {} }))
+
 const getInput = { test: "1" }
 autotestGet("https://httpbin.org/get")(getInput)(expect.objectContaining({ args: getInput }))
 
