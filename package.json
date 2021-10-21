@@ -1,6 +1,6 @@
 {
   "name": "@tim-code/autotest",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "",
   "main": "./index.cjs",
   "exports": {
@@ -15,6 +15,9 @@
   },
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.0.0"
+  },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
     "@babel/core": "^7.15.8",
@@ -46,8 +49,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "node-fetch": "^2.0.0"
   }
 }

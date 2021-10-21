@@ -43,10 +43,10 @@ export function autotest(
 
 async function jsonFetch(...args) {
   const result = await fetch(...args)
+  const text = await result.text()
   try {
-    return await result.json()
+    return JSON.parse(text)
   } catch (error) {
-    const text = await result.text()
     const shorter = text.slice(0, 50)
     throw new Error(`could not parse json starting with: ${shorter}`)
   }
