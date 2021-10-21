@@ -1,4 +1,4 @@
-import { autotest, autotestGet, autotestPost } from "./index.js"
+import { autotest, autotestGet, autotestHtml, autotestPost } from "./index.js"
 
 function add(x, y) {
   return x + y
@@ -21,3 +21,5 @@ const postInput = { check: 1 }
 autotestPost("https://httpbin.org/post")(postInput)(
   expect.objectContaining({ json: postInput })
 )
+
+autotestHtml("https://httpbin.org/")()(expect.stringContaining("<head>"))

@@ -41,6 +41,11 @@ export function autotest(
     }
 }
 
+async function htmlFetch(...args) {
+  const result = await fetch(...args)
+  return result.text()
+}
+
 async function jsonFetch(...args) {
   const result = await fetch(...args)
   const text = await result.text()
@@ -52,14 +57,25 @@ async function jsonFetch(...args) {
   }
 }
 
+function appendParams(url, input) {
+  const urlBuilder = new URL(url)
+  for (const key of Object.keys(input)) {
+    urlBuilder.searchParams.append(key, input[key])
+  }
+  return urlBuilder.toString()
+}
+
 export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {}) {
   return (input = {}) => {
-    const urlBuilder = new URL(url)
-    for (const key of Object.keys(input)) {
-      urlBuilder.searchParams.append(key, input[key])
-    }
-    url = urlBuilder.toString()
+    url = appendParams(url, input)
     return autotest(jsonFetch, autotestOptions)(url, fetchOptions)
+  }
+}
+
+export function autotestHtml(url, { fetchOptions = {}, ...autotestOptions } = {}) {
+  return (input = {}) => {
+    url = appendParams(url, input)
+    return autotest(htmlFetch, autotestOptions)(url, fetchOptions)
   }
 }
 
