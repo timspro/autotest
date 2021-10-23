@@ -1,6 +1,6 @@
 {
   "name": "@tim-code/autotest",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "",
   "main": "./index.cjs",
   "exports": {
@@ -10,7 +10,6 @@
   "type": "module",
   "scripts": {
     "test": "node --no-warnings --experimental-vm-modules node_modules/.bin/jest",
-    "test-debug": "node --inspect --no-warnings --experimental-vm-modules node_modules/.bin/jest",
     "prepublishOnly": "babel index.js --out-file index.cjs"
   },
   "author": "",
