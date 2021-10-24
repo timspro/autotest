@@ -41,21 +41,15 @@ export function autotest(
     }
 }
 
-function validateStatus(response) {
-  if (!response.ok) {
-    throw new Error(`bad response: ${response.status}`)
-  }
-}
-
+// do not pay attention to status header
+// not enough information to know it error is intentional
 async function htmlFetch(...args) {
   const response = await fetch(...args)
-  validateStatus(response)
   return response.text()
 }
 
 async function jsonFetch(...args) {
   const response = await fetch(...args)
-  validateStatus(response)
   const text = await response.text()
   try {
     return JSON.parse(text)
