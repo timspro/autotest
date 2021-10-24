@@ -41,14 +41,22 @@ export function autotest(
     }
 }
 
+function validateStatus(response) {
+  if (!response.ok) {
+    throw new Error(`bad response: ${response.status}`)
+  }
+}
+
 async function htmlFetch(...args) {
-  const result = await fetch(...args)
-  return result.text()
+  const response = await fetch(...args)
+  validateStatus(response)
+  return response.text()
 }
 
 async function jsonFetch(...args) {
-  const result = await fetch(...args)
-  const text = await result.text()
+  const response = await fetch(...args)
+  validateStatus(response)
+  const text = await response.text()
   try {
     return JSON.parse(text)
   } catch (error) {
