@@ -56,18 +56,17 @@ async function htmlFetch(...args) {
 }
 
 export function autotestHtml(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input = {}) => {
+  return (input) => {
     url = json.appendQueryParams(url, input)
     return autotest(htmlFetch, autotestOptions)(url, fetchOptions)
   }
 }
 
 export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input = {}) =>
-    autotest(json.get, autotestOptions)(url, input, { fetch, ...fetchOptions })
+  return (input) => autotest(json.get, autotestOptions)(url, input, { fetch, ...fetchOptions })
 }
 
 export function autotestPost(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input = {}) =>
+  return (input) =>
     autotest(json.post, autotestOptions)(url, input, { fetch, ...fetchOptions })
 }
