@@ -20,7 +20,7 @@ Note `expected` can be a (async) callback. If so, autotest will not attempt to c
 
 `only`: uses `test.only` to make only one test run; useful for debugging
 
-`array`: specifies that a non-empty array is expected and that what is passed in as expected should reflect each element
+`array`: specifies that a non-empty array is expected and that expected should reflect each element; no effect if error is thrown
 
 `setup`: a (async) callback that is invoked with no arguments before the test is run; its return value has no effect
 
