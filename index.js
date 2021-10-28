@@ -1,6 +1,3 @@
-import * as json from "@tim-code/json-fetch"
-import fetch from "node-fetch"
-
 async function handleExpected(thing, expected) {
   if (typeof expected === "function") {
     await expected(thing)
@@ -47,26 +44,4 @@ export function autotest(
         }
       })
     }
-}
-
-// ignore status header; not enough information to know if bad status is intentional
-async function htmlFetch(...args) {
-  const response = await fetch(...args)
-  return response.text()
-}
-
-export function autotestHtml(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input) => {
-    url = json.appendQueryParams(url, input)
-    return autotest(htmlFetch, autotestOptions)(url, fetchOptions)
-  }
-}
-
-export function autotestGet(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input) => autotest(json.get, autotestOptions)(url, input, { fetch, ...fetchOptions })
-}
-
-export function autotestPost(url, { fetchOptions = {}, ...autotestOptions } = {}) {
-  return (input) =>
-    autotest(json.post, autotestOptions)(url, input, { fetch, ...fetchOptions })
 }
