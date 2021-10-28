@@ -1,37 +1,20 @@
 import * as json from "@tim-code/json-fetch"
 import fetch from "node-fetch"
 
-async function handleExpected(thing, expected, property = undefined) {
+async function handleExpected(thing, expected) {
   if (typeof expected === "function") {
-    await expected(property === undefined ? thing : thing[property])
-  } else if (property === undefined) {
-    expect(thing).toEqual(expected)
+    await expected(thing)
   } else {
-    expect(thing).toHaveProperty(property, expected)
+    expect(thing).toEqual(expected)
   }
-}
-
-function handleExpectedArray(thing, expected) {
-  if (!Array.isArray(thing)) {
-    throw new Error("expected test result to be an array")
-  }
-  if (!thing.length) {
-    throw new Error("expected test result to not be empty")
-  }
-  const promises = []
-  for (let i = 0; i < thing.length; i++) {
-    promises.push(handleExpected(thing, expected, i.toString()))
-  }
-  return Promise.all(promises)
 }
 
 export function autotest(
   callback,
   {
-    name = undefined,
-    error = false,
-    only = false,
-    array = false,
+    name,
+    error,
+    only,
     setup = () => {},
     before = (...data) => data,
     after = (data) => data,
@@ -59,8 +42,6 @@ export function autotest(
         }
         if (error) {
           throw new Error("data received when error expected")
-        } else if (array) {
-          await handleExpectedArray(result, expected)
         } else {
           await handleExpected(result, expected)
         }
