@@ -23,3 +23,13 @@ autotestPost("https://httpbin.org/post")(postInput)(
 )
 
 autotestHtml("https://httpbin.org/")()(expect.stringContaining("<head>"))
+
+function fill(count, element) {
+  const result = []
+  for (let i = 0; i < count; i++) {
+    result.push(element)
+  }
+  return result
+}
+
+autotest(fill, { array: true })(3, 1)(1)

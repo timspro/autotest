@@ -1,5 +1,33 @@
 # autotest
 
+```
+npm install @tim-code/autotest
+```
+
+## Philosophy
+
+```js
+autotest(testFunction, options)(input1, input2, ...)(expected)
+```
+
+Note `expected` can be a (async) callback. If so, autotest will not attempt to compare the test output with anything and instead will pass it in to expected
+
+## Options
+
+`name`: a name for the test; otherwise, tries to make one from the test function's name
+
+`error`: specifies that an error is expected
+
+`only`: uses `test.only` to make only one test run; useful for debugging
+
+`array`: specifies that a non-empty array is expected and that what is passed in as expected should reflect each element
+
+`setup`: a (async) callback that is invoked with no arguments before the test is run; its return value has no effect
+
+`before`: a (async) callback that is invoked with the input before the test is run (but after setup); its return value will be passed to the test function
+
+`after`: a (async) callback that is invoked with the test function output; its return value will be used for expected
+
 ## TODO
 
 `index.js` could be split into two files.
