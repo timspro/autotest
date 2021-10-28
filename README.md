@@ -10,21 +10,21 @@ npm install @tim-code/autotest
 autotest(testFunction, options)(input1, input2, ...)(expected)
 ```
 
-Note `expected` can be a (async) callback. If so, autotest will not attempt to compare the test output with anything and instead will pass it in to expected
+Note `expected` can be a (async) callback. If so, autotest will not attempt to compare the test output with anything and instead will pass it in to the callback.
 
 ## Options
 
-`name`: a name for the test; otherwise, tries to make one from the test function's name
+`name`: Name the test. Otherwise, try to make one from the test function's name and passed in input.
 
-`error`: specifies that an error is expected
+`error`: Specify that an error is expected.
 
-`only`: uses `test.only` to make only one test run; useful for debugging
+`only`: Use `test.only` to make only one test run, which is useful for debugging.
 
-`setup`: a (async) callback that is invoked with no arguments before the test is run; its return value has no effect
+`setup`: (async) callback that is invoked with no arguments before the test is run; its return value has no effect
 
-`before`: a (async) callback that is invoked with the input before the test is run (but after setup); its return value will be passed to the test function
+`before`: a (async) callback that is invoked with the input before the test is run (but after setup); its return value must be an array and will be passed to the test function via the spread operator
 
-`after`: a (async) callback that is invoked with the test function output; its return value will be used for expected
+`after`: a (async) callback that is invoked with the test function output; its return value will be used for `expected`
 
 ## TODO
 
