@@ -45,3 +45,7 @@ export function autotest(
       })
     }
 }
+
+export function autotestFactory(defaultOptions = {}) {
+  return (callback, options = {}) => autotest(callback, { ...defaultOptions, ...options })
+}
