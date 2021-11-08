@@ -9,9 +9,10 @@ async function handleExpected(thing, expected) {
 export function autotest(
   callback,
   {
-    name,
-    error,
-    only,
+    name = undefined,
+    timeout = undefined,
+    error = false,
+    only = false,
     setup = () => {},
     before = (...data) => data,
     after = (data) => data,
@@ -23,26 +24,30 @@ export function autotest(
       const inputString = JSON.stringify(input).slice(1, -1)
       name = name || `${callback.name || "<anonymous>"}(${inputString})`
       const tester = only ? test.only : test
-      tester(name, async () => {
-        let result
-        try {
-          await setup()
-          const prepared = await before(...input)
-          const raw = await callback(...prepared)
-          result = await after(raw)
-        } catch (thrown) {
-          if (error) {
-            await handleExpected(thrown, expected)
-            return
+      tester(
+        name,
+        async () => {
+          let result
+          try {
+            await setup()
+            const prepared = await before(...input)
+            const raw = await callback(...prepared)
+            result = await after(raw)
+          } catch (thrown) {
+            if (error) {
+              await handleExpected(thrown, expected)
+              return
+            }
+            throw thrown
           }
-          throw thrown
-        }
-        if (error) {
-          throw new Error("data received when error expected")
-        } else {
-          await handleExpected(result, expected)
-        }
-      })
+          if (error) {
+            throw new Error("data received when error expected")
+          } else {
+            await handleExpected(result, expected)
+          }
+        },
+        timeout
+      )
     }
 }
 
