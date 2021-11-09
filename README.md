@@ -7,7 +7,9 @@ npm install @tim-code/autotest
 ## Philosophy
 
 ```js
-autotest(testFunction, options)(input1, input2, ...)(expected)
+import { autotest } from "@tim-code/autotest"
+
+autotest(functionToTest, options)(input1, input2, ...)(expected)
 ```
 
 Note `expected` can be a (async) callback. If so, autotest will not attempt to compare the test output with anything and instead will pass it in to the callback.

@@ -51,6 +51,6 @@ export function autotest(
     }
 }
 
-export function factory(defaultOptions = {}) {
+export function autotestFactory(defaultOptions = {}) {
   return (callback, options = {}) => autotest(callback, { ...defaultOptions, ...options })
 }
