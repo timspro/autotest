@@ -1,6 +1,6 @@
 {
   "name": "@tim-code/autotest",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "",
   "main": "./build/index.cjs",
   "exports": {
@@ -26,9 +26,6 @@
   },
   "eslintConfig": {
     "extends": "@tim-code",
-    "env": {
-      "jest": true
-    },
     "ignorePatterns": "index.cjs"
   },
   "babel": {
