@@ -1,6 +1,6 @@
 {
   "name": "@tim-code/autotest",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "",
   "main": "./build/index.cjs",
   "exports": {
@@ -28,6 +28,10 @@
     "extends": "@tim-code",
     "ignorePatterns": "index.cjs"
   },
+  "files": [
+    "build",
+    "src"
+  ],
   "babel": {
     "presets": [
       [
