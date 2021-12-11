@@ -1,14 +1,11 @@
 /* globals expect, test */
 
-async function validate(output, expected) {
-  if (typeof expected === "function") {
-    await expected(output)
-  } else {
-    expect(output).toEqual(expected)
+function createTest({ error, setup, input, before, after, callback, expected, _expect }) {
+  let testExpected = expected
+  if (typeof expected !== "function") {
+    // coerce expected into a function that tests for equality
+    testExpected = (output) => _expect(output).toEqual(expected)
   }
-}
-
-function testify({ error, setup, input, before, after, callback, expected }) {
   return async () => {
     await setup()
     const preparedInput = await before(...input)
@@ -17,16 +14,16 @@ function testify({ error, setup, input, before, after, callback, expected }) {
       output = await callback(...preparedInput)
     } catch (thrown) {
       if (error) {
-        await validate(thrown, expected)
+        await testExpected(thrown)
         return
       }
       throw thrown
     }
     const preparedOutput = await after(output)
     if (error) {
-      throw new Error("data received when error expected")
+      throw new Error("test function returned when error expected")
     } else {
-      await validate(preparedOutput, expected)
+      await testExpected(preparedOutput)
     }
   }
 }
@@ -41,17 +38,21 @@ export function autotest(
     setup = () => {},
     before = (...data) => data,
     after = (data) => data,
+    _test = test,
+    _expect = expect,
   } = {}
 ) {
   return (...input) =>
     (expected) => {
-      // remove [ and ] from stringified JSON array
-      const stringified = JSON.stringify(input).slice(1, -1)
-      name = name || `${callback.name || "<anonymous>"}(${stringified})`
-      const tester = only ? test.only : test
-      const options = { error, setup, input, before, after, callback, expected }
-      // tester should deal with any thrown errors by testify's returned callback
-      tester(name, testify(options), timeout)
+      if (!name) {
+        // remove [ and ] from stringified JSON array of input
+        const stringified = JSON.stringify(input).slice(1, -1)
+        name = `${callback.name || "<anonymous>"}(${stringified})`
+      }
+      const tester = only ? _test.only : _test
+      const options = { error, setup, input, before, after, callback, expected, _expect }
+      // tester should deal with any thrown errors by the created test
+      tester(name, createTest(options), timeout)
     }
 }
 
