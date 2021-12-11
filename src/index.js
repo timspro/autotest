@@ -3,7 +3,7 @@
 function createTest({ error, setup, input, before, after, callback, expected, _expect }) {
   let testExpected = expected
   if (typeof expected !== "function") {
-    // coerce expected into a function that tests for equality
+    // coerce expected into a function that tests for equality to the value of expected
     testExpected = (output) => _expect(output).toEqual(expected)
   }
   return async () => {
@@ -52,6 +52,7 @@ export function autotest(
       const tester = only ? _test.only : _test
       const options = { error, setup, input, before, after, callback, expected, _expect }
       // tester should deal with any thrown errors by the created test
+      // autotest should never throw an error and does not return anything (i.e. a promise)
       tester(name, createTest(options), timeout)
     }
 }

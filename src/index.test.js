@@ -28,13 +28,13 @@ function _test(expectedError) {
 }
 const options = { _test: _test(), _expect: expect }
 
-test("test autotest errors when divide used unexpectedly", () => {
+test("autotest errors when an error is expected but the test function returns", () => {
   autotest(divide, options)(6, 3)(2)
   autotest(divide, { ...options, error: true })(0, 0)(errorOutput)
 
+  // next line should be essentially equivalent to the previous line
   expect(autotest(divide, { ...options, _test: _test(errorOutput) })(0, 0))
 
-  // should throw if error is expected and none is received
   const noError = expect.objectContaining("test function returned when error expected")
   expect(autotest(divide, { ...options, _test: _test(noError), error: true })(4, 2))
-}, 100000)
+})
