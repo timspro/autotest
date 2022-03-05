@@ -1,6 +1,6 @@
 {
   "name": "@tim-code/autotest",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "",
   "main": "./build/index.cjs",
   "exports": {

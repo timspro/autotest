@@ -28,6 +28,12 @@ function createTest({ error, setup, input, before, after, callback, expected, _e
   }
 }
 
+export function getName({ input, callback, callbackName }) {
+  // remove [ and ] from stringified JSON array of input
+  const stringified = JSON.stringify(input).slice(1, -1)
+  return `${callbackName || callback.name || "<anonymous>"}(${stringified})`
+}
+
 export function autotest(
   callback,
   {
@@ -46,9 +52,7 @@ export function autotest(
   return (...input) =>
     (expected) => {
       if (!name) {
-        // remove [ and ] from stringified JSON array of input
-        const stringified = JSON.stringify(input).slice(1, -1)
-        name = `${callbackName || callback.name || "<anonymous>"}(${stringified})`
+        name = getName({ input, callback, callbackName })
       }
       const tester = only ? _test.only : _test
       const options = { error, setup, input, before, after, callback, expected, _expect }
@@ -56,6 +60,10 @@ export function autotest(
       // autotest should never throw an error and does not return anything (i.e. a promise)
       tester(name, createTest(options), timeout)
     }
+}
+
+export function metatest({ callback, ...options }) {
+  return autotest(callback, options)
 }
 
 export function factory(defaults = {}) {

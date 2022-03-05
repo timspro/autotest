@@ -1,4 +1,4 @@
-import { autotest } from "./index.js"
+import { autotest, getName } from "./index.js"
 
 function divide(x, y) {
   if (!y) {
@@ -37,4 +37,16 @@ test("autotest errors when an error is expected but the test function returns", 
 
   const noError = expect.objectContaining("test function returned when error expected")
   expect(autotest(divide, { ...options, _test: _test(noError), error: true })(4, 2))
+})
+
+test("getName", () => {
+  expect(getName({ input: [["a"], 1], callbackName: "b" })).toEqual('b(["a"],1)')
+})
+
+// eslint-disable-next-line no-empty-function
+function namedFunction() {}
+test("getName", () => {
+  expect(getName({ input: [["b"], 2], callback: namedFunction })).toEqual(
+    'namedFunction(["b"],2)'
+  )
 })
