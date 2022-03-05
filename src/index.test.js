@@ -1,4 +1,4 @@
-import { autotest, getName } from "./index.js"
+import { autotest, consume2, consume2Iterables, factory, getTestName } from "./index.js"
 
 function divide(x, y) {
   if (!y) {
@@ -39,14 +39,26 @@ test("autotest errors when an error is expected but the test function returns", 
   expect(autotest(divide, { ...options, _test: _test(noError), error: true })(4, 2))
 })
 
-test("getName", () => {
-  expect(getName({ input: [["a"], 1], callbackName: "b" })).toEqual('b(["a"],1)')
+test("getTestName", () => {
+  expect(getTestName({ input: [["a"], 1], callbackName: "b" })).toEqual('b(["a"],1)')
+  expect(getTestName({ input: [], callbackName: "c" })).toEqual("c()")
 })
 
 // eslint-disable-next-line no-empty-function
 function namedFunction() {}
-test("getName", () => {
-  expect(getName({ input: [["b"], 2], callback: namedFunction })).toEqual(
+test("getTestName with named function", () => {
+  expect(getTestName({ input: [["b"], 2], callback: namedFunction })).toEqual(
     'namedFunction(["b"],2)'
   )
 })
+
+function curriedDivide(x) {
+  return (y) => divide(x, y)
+}
+const autotestConsume = factory({ consume: consume2 })
+const addTest = autotestConsume(curriedDivide)
+addTest(1, 2)(0.5) // test name will be add([1,2]), not add(1)(2)
+autotestConsume(curriedDivide, { error: true })(1, 0)(errorOutput)
+
+const testConsumeArrays = factory({ consume: consume2Iterables })(curriedDivide)
+testConsumeArrays([1], [2])(0.5)
