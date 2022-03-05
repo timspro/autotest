@@ -1,5 +1,9 @@
 /* globals expect, test */
 
+function expectOutputToEqual(expect, expected) {
+  return (output) => expect(output).toEqual(expected)
+}
+
 function createTest({
   input,
   expected,
@@ -12,12 +16,9 @@ function createTest({
   consume,
   _expect,
 }) {
-  let testExpected = expected
-  if (typeof expected !== "function") {
-    // coerce expected into a function that tests for equality to the value of expected
-    testExpected = (output) => _expect(output).toEqual(expected)
-  }
-  async function testSteps() {
+  // coerce expected into a function that tests for equality to the value of expected
+  expected = expected === "function" ? expected : expectOutputToEqual(_expect, expected)
+  async function steps() {
     await setup()
     const preparedInput = await before(...input)
     let output
@@ -25,7 +26,7 @@ function createTest({
       output = await consume(callback, preparedInput)
     } catch (thrown) {
       if (error) {
-        await testExpected(thrown)
+        await expected(thrown)
         return
       }
       throw thrown
@@ -34,13 +35,10 @@ function createTest({
     if (error) {
       throw new Error("test function returned when error expected")
     } else {
-      await testExpected(preparedOutput)
+      await expected(preparedOutput)
     }
   }
-  return async () => {
-    await testSteps()
-    await teardown()
-  }
+  return () => steps().finally(teardown)
 }
 
 export function getTestName({ input, callback, callbackName }) {
