@@ -29,6 +29,8 @@ test("functionToTest", () => {
 
 `name`: Name the test. Otherwise, try to make one from the test function's name and passed in input.
 
+`callbackName`: If name is not specified, used instead of `functionToTest.name` to name the test.
+
 `error`: Specify that an error is expected.
 
 `only`: Use `test.only` to make only one test run, which is useful for debugging.

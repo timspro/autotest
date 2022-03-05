@@ -32,6 +32,7 @@ export function autotest(
   callback,
   {
     name = undefined,
+    callbackName = undefined,
     timeout = undefined,
     error = false,
     only = false,
@@ -47,7 +48,7 @@ export function autotest(
       if (!name) {
         // remove [ and ] from stringified JSON array of input
         const stringified = JSON.stringify(input).slice(1, -1)
-        name = `${callback.name || "<anonymous>"}(${stringified})`
+        name = `${callbackName || callback.name || "<anonymous>"}(${stringified})`
       }
       const tester = only ? _test.only : _test
       const options = { error, setup, input, before, after, callback, expected, _expect }
