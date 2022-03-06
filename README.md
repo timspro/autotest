@@ -9,7 +9,7 @@ A zero-dependency helper function to reduce boilerplate in writing Jest tests
 ## Philosophy
 
 ```js
-import { autotest, factory, getTestName } from "@tim-code/autotest"
+import { autotest, factory } from "@tim-code/autotest"
 
 autotest(functionToTest, options)(input1, input2, ...)(expected)
 
@@ -22,7 +22,7 @@ Note `expected` iself can be a (async) callback. If so, autotest will pass the t
 Similar Jest code for comparison:
 
 ```js
-test("functionToTest", () => {
+test("functionToTest(...)", () => {
   expect(functionToTest(input1, input2, ...)).toEqual(expected)
 })
 ```
