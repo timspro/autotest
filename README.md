@@ -50,9 +50,9 @@ test("functionToTest(...)", () => {
 This is a (async) callback that is invoked with the input before the test is run (but after setup). Its return value must be iterable and will be passed to the test callback via the spread operator. This can be useful for generating input to a test. For example:
 
 ```js
-const autotest = factory({ before: (multiple) => [Math.random() * multiple] })
-autotest(handleZeroToFive)(5)(expected)
-autotest(handleZeroToTen)(10)(expected)
+const autotest = factory({ before: (add, multiple) => [add + Math.random() * multiple] })
+autotest(handleOneToSix)(1, 5)(expected)
+autotest(handleOneToEleven)(1, 10)(expected)
 ```
 
 `consume`:
