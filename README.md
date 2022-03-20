@@ -17,7 +17,7 @@ factory(options)(functionToTest)(input1, input2, ...)(expected)
 
 ```
 
-Note `expected` iself can be a (async) callback. If so, autotest will pass the test output to it instead of using `expect(output).toEqual(expected)`.
+Note `expected` itself can be a (async) callback. If so, autotest will pass the test output to it instead of using `expect(output).toEqual(expected)`.
 
 Similar Jest code for comparison:
 

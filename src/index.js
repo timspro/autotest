@@ -17,7 +17,7 @@ function createTest({
   _expect,
 }) {
   // coerce expected into a function that tests for equality to the value of expected
-  expected = expected === "function" ? expected : expectOutputToEqual(_expect, expected)
+  expected = typeof expected === "function" ? expected : expectOutputToEqual(_expect, expected)
   async function steps() {
     await setup()
     const preparedInput = await before(...input)
